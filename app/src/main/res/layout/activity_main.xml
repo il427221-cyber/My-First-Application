@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="@id/barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@sample/posts_avatars" />
+        app:srcCompat="@drawable/ic_netology_avatar" />
 
     <TextView
         android:id="@+id/author"
@@ -90,35 +90,35 @@
         app:srcCompat="@drawable/ic_like_24" />
 
     <TextView
-        android:id="@+id/likes"
+        android:id="@+id/likesCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/indent"
         android:layout_marginTop="@dimen/padding"
         app:layout_constraintStart_toEndOf="@id/avatarLikes"
         app:layout_constraintTop_toBottomOf="@id/content"
-        tools:text="@sample/userActivities.json/data/likes" />
+        tools:text="10" />
 
     <ImageView
         android:id="@+id/avatarShares"
         android:layout_width="@dimen/icons_size"
         android:layout_height="@dimen/icons_size"
-        android:layout_marginStart="84dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="@dimen/padding"
         android:contentDescription="@string/description_post_shares"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/likesCount"
         app:layout_constraintTop_toBottomOf="@id/lowBarrier"
         app:srcCompat="@drawable/ic_share_24" />
 
     <TextView
-        android:id="@+id/shares"
+        android:id="@+id/sharesCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/indent"
         android:layout_marginTop="@dimen/padding"
         app:layout_constraintStart_toEndOf="@id/avatarShares"
         app:layout_constraintTop_toBottomOf="@id/content"
-        tools:text="@sample/userActivities.json/data/reposts" />
+        tools:text="5" />
 
     <TextView
         android:id="@+id/views"
