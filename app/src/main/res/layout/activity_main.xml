@@ -1,148 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
-        android:layout_marginStart="@dimen/padding"
-        android:layout_marginTop="@dimen/padding"
-        android:contentDescription="@string/description_post_author_avatar"
-        app:layout_constraintBottom_toBottomOf="@id/barrier"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_netology_avatar" />
-
-    <TextView
-        android:id="@+id/author"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/padding"
-        android:singleLine="true"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/published"
-        app:layout_constraintEnd_toStartOf="@id/menu"
-        app:layout_constraintStart_toEndOf="@id/avatar"
-        app:layout_constraintTop_toTopOf="@id/avatar"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:text="@sample/posts.json/data/author" />
-
-    <TextView
-        android:id="@+id/published"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding"
-        app:layout_constraintBottom_toBottomOf="@id/avatar"
-        app:layout_constraintStart_toEndOf="@id/avatar"
-        app:layout_constraintTop_toBottomOf="@id/author"
-        tools:text="@sample/posts.json/data/published" />
-
-    <ImageButton
-        android:id="@+id/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding"
-        android:layout_marginEnd="@dimen/padding"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/description_post_menu"
-        android:src="@drawable/ic_more_vert_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="avatar,published,menu" />
-
-    <TextView
-        android:id="@+id/content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:padding="@dimen/padding"
-        app:layout_constraintTop_toBottomOf="@id/barrier"
-        tools:text="@sample/posts.json/data/content" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/card_post"/>
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/lowBarrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="content" />
-
-    <ImageView
-        android:id="@+id/avatarLikes"
-        android:layout_width="@dimen/icons_size"
-        android:layout_height="@dimen/icons_size"
-        android:layout_marginStart="@dimen/padding"
-        android:layout_marginTop="@dimen/padding"
-        android:contentDescription="@string/description_post_likes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lowBarrier"
-        app:srcCompat="@drawable/ic_like_24" />
-
-    <TextView
-        android:id="@+id/likesCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/indent"
-        android:layout_marginTop="@dimen/padding"
-        app:layout_constraintStart_toEndOf="@id/avatarLikes"
-        app:layout_constraintTop_toBottomOf="@id/content"
-        tools:text="10" />
-
-    <ImageView
-        android:id="@+id/avatarShares"
-        android:layout_width="@dimen/icons_size"
-        android:layout_height="@dimen/icons_size"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="@dimen/padding"
-        android:contentDescription="@string/description_post_shares"
-        app:layout_constraintStart_toEndOf="@id/likesCount"
-        app:layout_constraintTop_toBottomOf="@id/lowBarrier"
-        app:srcCompat="@drawable/ic_share_24" />
-
-    <TextView
-        android:id="@+id/sharesCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/indent"
-        android:layout_marginTop="@dimen/padding"
-        app:layout_constraintStart_toEndOf="@id/avatarShares"
-        app:layout_constraintTop_toBottomOf="@id/content"
-        tools:text="5" />
-
-    <TextView
-        android:id="@+id/views"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding"
-        android:layout_marginEnd="@dimen/padding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/content"
-        android:text="@string/views_count" />
-
-    <ImageView
-        android:id="@+id/avatarViews"
-        android:layout_width="@dimen/icons_size"
-        android:layout_height="@dimen/icons_size"
-        android:layout_marginTop="@dimen/padding"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="@string/description_post_views"
-        app:layout_constraintBottom_toBottomOf="@id/views"
-        app:layout_constraintEnd_toStartOf="@id/views"
-        app:layout_constraintTop_toBottomOf="@id/lowBarrier"
-        app:layout_constraintTop_toTopOf="@id/views"
-        app:layout_constraintVertical_bias="0.972"
-        app:srcCompat="@drawable/ic_views_24" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
