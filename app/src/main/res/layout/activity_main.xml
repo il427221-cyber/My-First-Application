@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,9 +10,86 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/card_post"/>
+        app:layout_constraintBottom_toTopOf="@id/contentPlate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/card_post" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/contentPlate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="@string/post_input_hint"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/save"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackgroundBorderless"
+        android:padding="@dimen/indent"
+        android:src="@drawable/ic_save_48"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/contentPlate" />
+
+    <TextView
+        android:id="@+id/editHint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_drawable"
+        android:hint="@string/edit_hint"
+        android:padding="12dp"
+        android:paddingStart="48dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/contentPlate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/pencil"
+        app:layout_constraintStart_toStartOf="parent"
+
+        tools:ignore="RtlSymmetry" />
+
+    <ImageView
+        android:id="@+id/cancelEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/indent"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_cross"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/editHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/editHint"
+        />
+
+    <ImageView
+        android:id="@+id/pencil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:src="@drawable/ic_edit"
+        android:background="?selectableItemBackgroundBorderless"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/contentPlate"
+        app:layout_constraintTop_toTopOf="@id/editHint"
+        app:layout_constraintStart_toStartOf="parent"
+         />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/editControlsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="editHint,cancelEdit,pencil" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
