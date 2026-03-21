@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Нетология</string>
+    <string name="remove">Удалить</string>
+    <string name="post_input_hint">Новый пост</string>
+    <string name="content_is_blank_error">Содержимое пусто</string>
+    <string name="edit">Редактировать</string>
+    <string name="edit_hint">Отредактировать пост</string>
 </resources>
