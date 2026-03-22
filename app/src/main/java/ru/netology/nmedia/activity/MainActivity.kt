@@ -17,6 +17,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.viewmodel.PostViewModel
 import android.view.View
+import ru.netology.nmedia.repository.PostRepositoryInMemoryImpl
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onEdit(post: Post) {
                     viewModel.edit(post)
                     binding.editControlsGroup.visibility = View.VISIBLE
+
                 }
 
                 override fun onRemove(post: Post) {
@@ -66,12 +68,14 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.content_is_blank_error, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
             viewModel.saveContent(content)
 
             binding.contentPlate.setText(" ")
             binding.contentPlate.clearFocus()
 
             AndroidUtils.hideKeyboard(binding.contentPlate)
+            binding.editControlsGroup.visibility = View.GONE
         }
         viewModel.edited.observe(this) { edited ->
             if (edited.id != 0L) {
@@ -85,10 +89,9 @@ class MainActivity : AppCompatActivity() {
         binding.cancelEdit.setOnClickListener {
             with(binding) {
                 editControlsGroup.visibility = View.GONE
-
                 AndroidUtils.hideKeyboard(binding.contentPlate)
                 contentPlate.setText("")
-
+                viewModel.clearEditMode()
             }
         }
     }
