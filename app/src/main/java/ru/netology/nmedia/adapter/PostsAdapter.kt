@@ -45,14 +45,12 @@ class PostViewHolder(val binding: CardPostBinding, private val listener: PostLis
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            likesCount.text = formatNumbersHelper.bigNumbersFormat(post.likes)
-            sharesCount.text = formatNumbersHelper.bigNumbersFormat(post.reposts)
-            avatarLikes.setImageResource(
-                if (post.likedByMe) R.drawable.ic_liked_24 else R.drawable.ic_like_24
-            )
-            avatarShares.setImageResource(
-                R.drawable.ic_share_24
-            )
+
+            avatarLikes.isChecked = post.likedByMe
+            avatarLikes.text = formatNumbersHelper.bigNumbersFormat(post.likes)
+
+            avatarShares.isActivated = post.repostedByMe
+            avatarShares.text = formatNumbersHelper.bigNumbersFormat(post.reposts)
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
