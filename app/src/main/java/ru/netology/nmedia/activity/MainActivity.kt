@@ -1,5 +1,6 @@
 package ru.netology.nmedia.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -8,16 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import ru.netology.nmedia.R
-import ru.netology.nmedia.adapter.PostDiffCallback
 import ru.netology.nmedia.adapter.PostListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
-import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.viewmodel.PostViewModel
-import android.view.View
-import ru.netology.nmedia.repository.PostRepositoryInMemoryImpl
+import androidx.activity.result.launch
+import androidx.core.net.toUri
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,14 +29,21 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         val viewModel: PostViewModel by viewModels()
+        val newPostLauncher = registerForActivityResult(NewPostContract) {
+            val result = it ?: return@registerForActivityResult
+            viewModel.saveContent(result)
+        }
+        val newEditLauncher = registerForActivityResult(EditContract) {
+            val result = it ?: return@registerForActivityResult
+            viewModel.saveContent(result)
+        }
+
         val adapter = PostsAdapter(
             object : PostListener {
                 override fun onEdit(post: Post) {
+                    newEditLauncher.launch(post.content)
                     viewModel.edit(post)
-                    binding.editControlsGroup.visibility = View.VISIBLE
-
                 }
 
                 override fun onRemove(post: Post) {
@@ -50,49 +55,66 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onRepost(post: Post) {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, post.content)
+                    }
+                    val chooser =
+                        Intent.createChooser(intent, getString(R.string.description_post_shares))
+                    startActivity(chooser)
                     viewModel.repostById(post.id)
+                }
+
+
+                private fun openUrlInBrowser(url: String) {
+                    if (url.isNotBlank()) {
+                        val webpage = url.toUri()
+                        val intent = Intent(Intent.ACTION_VIEW, webpage)
+
+                        if (intent.resolveActivity(packageManager) != null) {
+                            val chooser = Intent.createChooser(
+                                intent,
+                                getString(R.string.description_post_shares)
+                            ) // Используйте более общий текст
+                            startActivity(chooser)
+                        } else {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Не могу открыть ссылку: нет подходящих приложений.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(this@MainActivity, "Ссылка пуста.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+
+
+                override fun onShow(post: Post) {
+                    post.video?.let { videoUrlString ->
+                        openUrlInBrowser(videoUrlString)
+                    } ?: run {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "В этом посте отсутствует видео",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
             }
 
         )
+
         binding.list.adapter = adapter
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
 
-        binding.save.setOnClickListener {
-            val content = binding.contentPlate.text?.toString().orEmpty()
+        binding.fab.setOnClickListener { newPostLauncher.launch() }
 
-            if (content.isBlank()) {
-                Toast.makeText(this, R.string.content_is_blank_error, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            viewModel.saveContent(content)
-
-            binding.contentPlate.setText(" ")
-            binding.contentPlate.clearFocus()
-
-            AndroidUtils.hideKeyboard(binding.contentPlate)
-            binding.editControlsGroup.visibility = View.GONE
-        }
-        viewModel.edited.observe(this) { edited ->
-            if (edited.id != 0L) {
-                with(binding.contentPlate) {
-                    AndroidUtils.showKeyboard(this)
-                    setText("")
-                    append(edited.content)
-                }
-            }
-        }
-        binding.cancelEdit.setOnClickListener {
-            with(binding) {
-                editControlsGroup.visibility = View.GONE
-                AndroidUtils.hideKeyboard(binding.contentPlate)
-                contentPlate.setText("")
-                viewModel.clearEditMode()
-            }
-        }
     }
 }
+

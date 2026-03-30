@@ -11,13 +11,15 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:layout_marginStart="@dimen/padding"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="@dimen/padding"
         android:contentDescription="@string/description_post_author_avatar"
         app:layout_constraintBottom_toBottomOf="@id/barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_netology_avatar" />
+
 
     <TextView
         android:id="@+id/author"
@@ -70,6 +72,7 @@
         android:autoLink="web"
         android:padding="@dimen/padding"
         app:layout_constraintTop_toBottomOf="@id/barrier"
+        tools:layout_editor_absoluteX="0dp"
         tools:text="@sample/posts.json/data/content" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -78,6 +81,34 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="content" />
+
+    <ImageView
+        android:id="@+id/videoContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/description_post_author_avatar"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toBottomOf="@id/lowBarrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/design_default_color_on_primary"
+        app:srcCompat="@drawable/ic_study" />
+
+    <ImageView
+        android:id="@+id/play"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="36dp"
+        android:contentDescription="@string/description_post_author_avatar"
+        app:layout_constraintTop_toTopOf="@id/videoContent"
+        app:layout_constraintBottom_toBottomOf="@id/videoContent"
+        app:layout_constraintStart_toStartOf="@id/videoContent"
+        app:layout_constraintEnd_toEndOf="@id/videoContent"
+        app:srcCompat="@drawable/ic_play_circle" />
+
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/avatarLikes"
@@ -93,7 +124,7 @@
         app:icon="@drawable/ic_like_selector"
         app:iconTint="@color/like_color_selector"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lowBarrier"
+        app:layout_constraintTop_toBottomOf="@id/videoContent"
         tools:text="10" />
 
     <com.google.android.material.button.MaterialButton
@@ -110,9 +141,8 @@
         app:icon="@drawable/ic_share_selector"
         app:iconTint="@color/share_color_selector"
         app:layout_constraintStart_toEndOf="@id/avatarLikes"
-        app:layout_constraintTop_toBottomOf="@id/lowBarrier"
+        app:layout_constraintTop_toBottomOf="@id/videoContent"
         tools:text="5" />
-
 
     <TextView
         android:id="@+id/views"
@@ -121,7 +151,7 @@
         android:layout_marginTop="@dimen/padding"
         android:layout_marginEnd="@dimen/padding"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/content"
+        app:layout_constraintTop_toBottomOf="@id/videoContent"
         android:text="@string/views_count" />
 
     <ImageView
@@ -132,11 +162,21 @@
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/description_post_views"
         app:layout_constraintBottom_toBottomOf="@id/views"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/views"
-        app:layout_constraintTop_toBottomOf="@id/lowBarrier"
+        app:layout_constraintTop_toBottomOf="@id/videoContent"
         app:layout_constraintTop_toTopOf="@id/views"
         app:layout_constraintVertical_bias="0.972"
         app:srcCompat="@drawable/ic_views_24" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/editControlsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:constraint_referenced_ids="play,videoContent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
