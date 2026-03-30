@@ -1,6 +1,7 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
@@ -18,10 +19,12 @@ interface PostListener {
     fun onLike(post: Post)
 
     fun onRepost(post: Post)
+
+    fun onShow(post: Post)
 }
 
 class PostsAdapter(private val listener: PostListener) : ListAdapter<Post, PostViewHolder>(
-    PostDiffCallback
+    PostViewHolder.PostDiffCallback
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -82,13 +85,26 @@ class PostViewHolder(val binding: CardPostBinding, private val listener: PostLis
             avatarShares.setOnClickListener {
                 listener.onRepost(post)
             }
+
+            val videoUrl = post.video
+            if (!videoUrl.isNullOrBlank()) {
+                editControlsGroup.visibility = View.VISIBLE
+
+                binding.videoContent.setOnClickListener {
+                    listener.onShow(post)
+                }
+                binding.play.setOnClickListener {
+                    listener.onShow(post)
+                }
+
+            }
         }
     }
-}
 
-object PostDiffCallback : DiffUtil.ItemCallback<Post>() {
-    override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
+    object PostDiffCallback : DiffUtil.ItemCallback<Post>() {
+        override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem == newItem
+        override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem == newItem
 
+    }
 }
