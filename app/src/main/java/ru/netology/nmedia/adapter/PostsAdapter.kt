@@ -97,7 +97,11 @@ class PostViewHolder(val binding: CardPostBinding, private val listener: PostLis
                     listener.onShow(post)
                 }
 
+            } else {
+                editControlsGroup.visibility = View.GONE
             }
+
+
         }
     }
 

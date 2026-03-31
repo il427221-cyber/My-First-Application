@@ -37,6 +37,7 @@ class NewPostActivity : AppCompatActivity() {
         val textToEdit = intent.getStringExtra(EditContract.KEY_TEXT)
         binding.edit.setText(textToEdit)
     }
+
 }
 
 object NewPostContract : ActivityResultContract<Unit, String?>() {
