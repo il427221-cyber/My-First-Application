@@ -34,16 +34,21 @@ class MainActivity : AppCompatActivity() {
             val result = it ?: return@registerForActivityResult
             viewModel.saveContent(result)
         }
-        val newEditLauncher = registerForActivityResult(EditContract) {
-            val result = it ?: return@registerForActivityResult
-            viewModel.saveContent(result)
+        val newEditLauncher = registerForActivityResult(EditContract) { result ->
+            if(result != null) {
+                viewModel.saveContent(result)
+            } else {
+                viewModel.clearEditMode()
+            }
+
         }
 
         val adapter = PostsAdapter(
             object : PostListener {
                 override fun onEdit(post: Post) {
-                    newEditLauncher.launch(post.content)
                     viewModel.edit(post)
+                    newEditLauncher.launch(post.content)
+
                 }
 
                 override fun onRemove(post: Post) {
@@ -72,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                         val webpage = url.toUri()
                         val intent = Intent(Intent.ACTION_VIEW, webpage)
 
-                        if (intent.resolveActivity(packageManager) != null) {
+                        if (packageManager.resolveActivity(intent, 0) != null) {
                             val chooser = Intent.createChooser(
                                 intent,
                                 getString(R.string.description_post_shares)

@@ -87,7 +87,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:contentDescription="@string/description_post_author_avatar"
+        android:contentDescription="@string/description_video_content"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@id/lowBarrier"
@@ -101,14 +101,12 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="36dp"
-        android:contentDescription="@string/description_post_author_avatar"
+        android:contentDescription="@string/description_play_video"
         app:layout_constraintTop_toTopOf="@id/videoContent"
         app:layout_constraintBottom_toBottomOf="@id/videoContent"
         app:layout_constraintStart_toStartOf="@id/videoContent"
         app:layout_constraintEnd_toEndOf="@id/videoContent"
         app:srcCompat="@drawable/ic_play_circle" />
-
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/avatarLikes"
