@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                     viewModel.repostById(post.id)
                 }
 
-
                 private fun openUrlInBrowser(url: String) {
                     if (url.isNotBlank()) {
                         val webpage = url.toUri()
@@ -81,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                             val chooser = Intent.createChooser(
                                 intent,
                                 getString(R.string.description_post_shares)
-                            ) // Используйте более общий текст
+                            )
                             startActivity(chooser)
                         } else {
                             Toast.makeText(
