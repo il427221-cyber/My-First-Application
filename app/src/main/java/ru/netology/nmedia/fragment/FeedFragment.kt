@@ -1,53 +1,44 @@
-package ru.netology.nmedia.activity
+package ru.netology.nmedia.fragment
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostListener
 import ru.netology.nmedia.adapter.PostsAdapter
-import ru.netology.nmedia.databinding.ActivityMainBinding
+import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.fragment.NewPostFragment.Companion.CONTENT_KEY
 import ru.netology.nmedia.viewmodel.PostViewModel
-import androidx.activity.result.launch
-import androidx.core.net.toUri
 
-class MainActivity : AppCompatActivity() {
+class FeedFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        val viewModel: PostViewModel by viewModels()
-        val newPostLauncher = registerForActivityResult(NewPostContract) {
-            val result = it ?: return@registerForActivityResult
-            viewModel.saveContent(result)
-        }
-        val newEditLauncher = registerForActivityResult(EditContract) { result ->
-            if(result != null) {
-                viewModel.saveContent(result)
-            } else {
-                viewModel.clearEditMode()
-            }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val binding = FragmentFeedBinding.inflate(layoutInflater)
 
-        }
+
+        val content: String? = arguments?.getString(CONTENT_KEY)
+
+        val viewModel: PostViewModel by activityViewModels()
 
         val adapter = PostsAdapter(
             object : PostListener {
                 override fun onEdit(post: Post) {
+
                     viewModel.edit(post)
-                    newEditLauncher.launch(post.content)
+                    findNavController().navigate(R.id.action_feedFragment4_to_newPostFragment2)
 
                 }
 
@@ -76,6 +67,8 @@ class MainActivity : AppCompatActivity() {
                         val webpage = url.toUri()
                         val intent = Intent(Intent.ACTION_VIEW, webpage)
 
+                        val packageManager: PackageManager = requireContext().packageManager
+
                         if (packageManager.resolveActivity(intent, 0) != null) {
                             val chooser = Intent.createChooser(
                                 intent,
@@ -84,28 +77,37 @@ class MainActivity : AppCompatActivity() {
                             startActivity(chooser)
                         } else {
                             Toast.makeText(
-                                this@MainActivity,
+                                requireContext(),
                                 "Не могу открыть ссылку: нет подходящих приложений.",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
                     } else {
-                        Toast.makeText(this@MainActivity, "Ссылка пуста.", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "Ссылка пуста.", Toast.LENGTH_SHORT)
                             .show()
                     }
                 }
-
 
                 override fun onShow(post: Post) {
                     post.video?.let { videoUrlString ->
                         openUrlInBrowser(videoUrlString)
                     } ?: run {
                         Toast.makeText(
-                            this@MainActivity,
+                            requireContext(),
                             "В этом посте отсутствует видео",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                }
+
+                override fun showPost(post: Post) {
+                    val bundle = Bundle().apply {
+                        putLong("POST_ID", post.id)
+                    }
+                    findNavController().navigate(
+                        R.id.action_feedFragment4_to_cardPostFragment,
+                        bundle
+                    )
                 }
 
             }
@@ -113,12 +115,19 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.list.adapter = adapter
-        viewModel.data.observe(this) { posts ->
+        viewModel.data.observe(viewLifecycleOwner) { posts ->
             adapter.submitList(posts)
         }
 
-        binding.fab.setOnClickListener { newPostLauncher.launch() }
+        binding.fab.setOnClickListener {
+            findNavController().navigate(R.id.action_feedFragment4_to_newPostFragment2)
+        }
 
+
+
+        return binding.root
     }
+
+
 }
 

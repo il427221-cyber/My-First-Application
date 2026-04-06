@@ -4,12 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.FormatNumbers
-import ru.netology.nmedia.databinding.CardPostBinding
+import ru.netology.nmedia.databinding.FragmentCardPostBinding
 import ru.netology.nmedia.dto.Post
 
 interface PostListener {
@@ -21,6 +22,8 @@ interface PostListener {
     fun onRepost(post: Post)
 
     fun onShow(post: Post)
+
+    fun showPost(post: Post)
 }
 
 class PostsAdapter(private val listener: PostListener) : ListAdapter<Post, PostViewHolder>(
@@ -28,7 +31,7 @@ class PostsAdapter(private val listener: PostListener) : ListAdapter<Post, PostV
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = FragmentCardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding, listener)
     }
 
@@ -39,7 +42,7 @@ class PostsAdapter(private val listener: PostListener) : ListAdapter<Post, PostV
 
 }
 
-class PostViewHolder(val binding: CardPostBinding, private val listener: PostListener) :
+class PostViewHolder(val binding: FragmentCardPostBinding, private val listener: PostListener) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         with(binding) {
@@ -54,6 +57,11 @@ class PostViewHolder(val binding: CardPostBinding, private val listener: PostLis
 
             avatarShares.isActivated = post.repostedByMe
             avatarShares.text = formatNumbersHelper.bigNumbersFormat(post.reposts)
+
+            content.setOnClickListener {
+                listener.showPost(post)
+
+            }
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
