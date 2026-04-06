@@ -33,7 +33,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                     post.copy(content = trimmed)
                 )
             }
-            edited.value = empty
+            clearEditMode()
         }
 
     }
