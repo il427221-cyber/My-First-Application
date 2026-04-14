@@ -1,7 +1,5 @@
 package ru.netology.nmedia.dto
 
-import java.net.URL
-
 data class Post(
     val id: Long = 0,
     val author: String = "",

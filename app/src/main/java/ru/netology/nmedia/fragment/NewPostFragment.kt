@@ -17,7 +17,7 @@ import kotlin.getValue
 class NewPostFragment : Fragment() {
     private val viewModel: PostViewModel by activityViewModels()
 
-    lateinit var onBackPressedCallback: OnBackPressedCallback
+     lateinit var onBackPressedCallback: OnBackPressedCallback
 
     fun performSystemBack() {
         onBackPressedCallback.isEnabled = false
@@ -90,6 +90,7 @@ class NewPostFragment : Fragment() {
             if (!binding.edit.text.isNullOrBlank()) {
                 val content = binding.edit.text.toString()
                 viewModel.saveContent(content)
+                viewModel.clearDraft()
             }
             findNavController().navigateUp()
 
