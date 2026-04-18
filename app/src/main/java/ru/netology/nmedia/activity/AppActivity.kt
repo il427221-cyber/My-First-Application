@@ -1,6 +1,9 @@
 package ru.netology.nmedia.activity
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
+import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.databinding.ActivityAppBinding
 import ru.netology.nmedia.fragment.NewPostFragment
 
@@ -25,8 +29,18 @@ class AppActivity : AppCompatActivity() {
             insets
         }
 
+        requestNotificationsPermission()
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
         val navController = navHostFragment.navController
+
+        FirebaseMessaging.getInstance().token.addOnSuccessListener{
+            println(it)
+        }
+            .addOnFailureListener{
+                it.printStackTrace()
+            }
+
 
         intent?.let {
             if (it.action != Intent.ACTION_SEND) {
@@ -53,4 +67,21 @@ class AppActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun requestNotificationsPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return
+        }
+
+        val permission = Manifest.permission.POST_NOTIFICATIONS
+        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
+        requestPermissions(arrayOf(permission), 1)
+    }
+
+
+
+
 }
