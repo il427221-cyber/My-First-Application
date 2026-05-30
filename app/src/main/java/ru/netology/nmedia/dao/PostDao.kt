@@ -32,16 +32,6 @@ interface PostDao {
     fun removeById(id: Long)
 
 
-
-    @Query(            """
-            UPDATE posts SET
-            reposts = reposts + 1,
-            repostedByMe = 1
-            WHERE id = :id;
-        """
-    )
-    fun repostById(id: Long)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(posts: List<PostEntity>)
 

@@ -30,9 +30,11 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            manifestPlaceholders["usesCleartextTraffic"] = false
+        }
+        debug{
+            manifestPlaceholders["usesCleartextTraffic"] = true
         }
     }
     compileOptions {
@@ -52,6 +54,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
+    implementation(libs.okhttp)
     implementation(libs.androidx.room)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)

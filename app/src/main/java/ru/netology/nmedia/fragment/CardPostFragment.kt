@@ -32,23 +32,19 @@ class CardPostFragment : Fragment() {
         val postId = arguments?.getLong("POST_ID")
 
         if (postId != null && postId != 0L) {
-            viewModel.data.observe(viewLifecycleOwner) { posts ->
-                val currentPost = posts.find { it.id == postId }
+            viewModel.data.observe(viewLifecycleOwner) { state ->
+                val currentPost = state.posts.find { it.id == postId }
 
                 currentPost?.let { post ->
                     with(binding) {
                         val formatNumbersHelper = FormatNumbers()
 
                         author.text = post.author
-                        published.text = post.published
+                        published.text = post.published.toString()
                         content.text = post.content
 
                         avatarLikes.isChecked = post.likedByMe
                         avatarLikes.text = formatNumbersHelper.bigNumbersFormat(post.likes)
-
-                        avatarShares.isActivated = post.repostedByMe
-                        avatarShares.text = formatNumbersHelper.bigNumbersFormat(post.reposts)
-
 
                         menu.setOnClickListener {
                             PopupMenu(it.context, it).apply {
@@ -76,76 +72,7 @@ class CardPostFragment : Fragment() {
                         }
 
                         avatarLikes.setOnClickListener {
-                            viewModel.likeById(post.id)
-                        }
-
-                        avatarShares.setOnClickListener {
-                            viewModel.repostById(post.id)
-
-                            val intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, post.content)
-                            }
-                            val chooser = Intent.createChooser(
-                                intent,
-                                getString(R.string.description_post_shares)
-                            )
-                            startActivity(chooser)
-                            viewModel.repostById(post.id)
-                        }
-
-                        fun openUrlInBrowser(url: String) {
-                            if (url.isNotBlank()) {
-                                val webpage = url.toUri()
-                                val intent = Intent(Intent.ACTION_VIEW, webpage)
-
-                                val packageManager: PackageManager = requireContext().packageManager
-
-                                if (packageManager.resolveActivity(intent, 0) != null) {
-                                    val chooser = Intent.createChooser(
-                                        intent,
-                                        getString(R.string.description_post_shares)
-                                    )
-                                    startActivity(chooser)
-                                } else {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Не могу открыть ссылку: нет подходящих приложений.",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Ссылка пуста.",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
-                        }
-
-                        fun videoShow(post: Post) {
-                            post.video?.let { videoUrlString ->
-                                openUrlInBrowser(videoUrlString)
-                            }
-                        }
-
-                        val videoUrl = post.video
-                        if (!videoUrl.isNullOrBlank()) {
-                            editControlsGroup.visibility = View.VISIBLE
-
-                            with(binding) {
-
-                                videoContent.setOnClickListener {
-                                    videoShow(post)
-                                }
-                                play.setOnClickListener {
-                                    videoShow(post)
-                                }
-                            }
-                        } else {
-                            editControlsGroup.visibility = View.GONE
+                            viewModel.likeById(post)
                         }
 
                     }

@@ -27,4 +27,53 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add_24" />
+    
+    <ProgressBar
+        android:id="@+id/progress"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/retry"
+        android:id="@+id/errorTitle"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:text="@string/network_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <Button
+        android:id="@+id/retry"
+        app:layout_constraintTop_toBottomOf="@id/errorTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/errorGroup"
+        android:visibility="gone"
+        app:constraint_referenced_ids="errorTitle,retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/empty"
+        android:text="@string/no_posts"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
