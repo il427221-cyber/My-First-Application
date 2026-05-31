@@ -4,7 +4,6 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
-import kotlin.text.format
 
 class FormatNumbers {
     val formatSymbols = DecimalFormatSymbols(Locale.US).apply {

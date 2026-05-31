@@ -48,14 +48,11 @@ class PostViewHolder(val binding: FragmentCardPostBinding, private val listener:
             val formatNumbersHelper = FormatNumbers()
 
             author.text = post.author
-            published.text = post.published
+            published.text = post.published.toString()
             content.text = post.content
 
             avatarLikes.isChecked = post.likedByMe
             avatarLikes.text = formatNumbersHelper.bigNumbersFormat(post.likes)
-
-            avatarShares.isActivated = post.repostedByMe
-            avatarShares.text = formatNumbersHelper.bigNumbersFormat(post.reposts)
 
             content.setOnClickListener {
                 listener.showPost(post)
@@ -91,21 +88,6 @@ class PostViewHolder(val binding: FragmentCardPostBinding, private val listener:
 
             avatarShares.setOnClickListener {
                 listener.onRepost(post)
-            }
-
-            val videoUrl = post.video
-            if (!videoUrl.isNullOrBlank()) {
-                editControlsGroup.visibility = View.VISIBLE
-
-                binding.videoContent.setOnClickListener {
-                    listener.onShow(post)
-                }
-                binding.play.setOnClickListener {
-                    listener.onShow(post)
-                }
-
-            } else {
-                editControlsGroup.visibility = View.GONE
             }
 
 

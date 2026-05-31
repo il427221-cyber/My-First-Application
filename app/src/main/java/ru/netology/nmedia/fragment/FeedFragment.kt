@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -28,7 +29,6 @@ class FeedFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(layoutInflater)
 
-
         val content: String? = arguments?.getString(CONTENT_KEY)
 
         val viewModel: PostViewModel by activityViewModels()
@@ -47,7 +47,7 @@ class FeedFragment : Fragment() {
                 }
 
                 override fun onLike(post: Post) {
-                    viewModel.likeById(post.id)
+                    viewModel.likeById(post)
                 }
 
                 override fun onRepost(post: Post) {
@@ -56,10 +56,13 @@ class FeedFragment : Fragment() {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, post.content)
                     }
-                    val chooser =
-                        Intent.createChooser(intent, getString(R.string.description_post_shares))
+                    val chooser = Intent.createChooser(intent, getString(R.string.description_post_shares))
                     startActivity(chooser)
-                    viewModel.repostById(post.id)
+                    //viewModel.repostById(post.id)
+                }
+
+                override fun onShow(post: Post) {
+                    TODO("Not yet implemented")
                 }
 
                 private fun openUrlInBrowser(url: String) {
@@ -88,18 +91,6 @@ class FeedFragment : Fragment() {
                     }
                 }
 
-                override fun onShow(post: Post) {
-                    post.video?.let { videoUrlString ->
-                        openUrlInBrowser(videoUrlString)
-                    } ?: run {
-                        Toast.makeText(
-                            requireContext(),
-                            "В этом посте отсутствует видео",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
                 override fun showPost(post: Post) {
                     val bundle = Bundle().apply {
                         putLong("POST_ID", post.id)
@@ -115,9 +106,15 @@ class FeedFragment : Fragment() {
         )
 
         binding.list.adapter = adapter
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-            adapter.submitList(posts)
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            adapter.submitList(state.posts)
+            binding.errorGroup.isVisible = state.error
+            binding.empty.isVisible = state.empty
+            binding.progress.isVisible = state.loading
         }
+
+
+        binding.retry.setOnClickListener { viewModel.loadPosts() }
 
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment4_to_newPostFragment2)

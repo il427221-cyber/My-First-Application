@@ -9,13 +9,11 @@ data class PostEntity(
     @PrimaryKey(true)
     val id: Long,
     val author: String,
-    val published: String,
+    val published: Long,
     val content: String,
     val likes: Int,
-    val reposts: Int,
-    var video: String?,
     val likedByMe: Boolean,
-    val repostedByMe: Boolean
+
 ) {
     fun toPost() = Post(
         id = id,
@@ -23,10 +21,7 @@ data class PostEntity(
         published = published,
         content = content,
         likes = likes,
-        reposts = reposts,
-        video = video,
         likedByMe = likedByMe,
-        repostedByMe = repostedByMe
 
     )
 
@@ -35,14 +30,10 @@ data class PostEntity(
             PostEntity(
                 id = id,
                 author = author,
-                published = published,
                 content = content,
-                likes = likes,
-                reposts = reposts,
-                video = video,
+                published = published,
                 likedByMe = likedByMe,
-                repostedByMe = repostedByMe
-
+                likes = likes
 
             )
         }

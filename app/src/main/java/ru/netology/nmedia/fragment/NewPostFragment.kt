@@ -59,32 +59,39 @@ class NewPostFragment : Fragment() {
             if (post != null && post.id != 0L) {
                 if (currentEditTextContent != post.content) {
                     binding.edit.setText(post.content)
+
                     binding.edit.requestFocus()
                     binding.edit.text?.length?.let { selection ->
                         binding.edit.setSelection(selection)
                     }
-                    Toast.makeText(context, "Редактируем пост: '${post.content}'", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                val draftContent = viewModel.getDraft()
-
-                if (draftContent != null && draftContent.isNotBlank()) {
-                    if (currentEditTextContent != draftContent) {
-                        binding.edit.setText(draftContent)
-                        binding.edit.requestFocus()
-                        binding.edit.text?.length?.let { selection ->
-                            binding.edit.setSelection(selection)
-                        }
-                        Toast.makeText(context, "Загружен черновик: '${draftContent}'", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    if (currentEditTextContent.isNotBlank()) {
-                        binding.edit.setText("")
-
-                    }
+                    Toast.makeText(
+                        context,
+                        "Редактируем пост: '${post.content}'",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-        }
+            }
+//        else {
+//                val draftContent = viewModel.getDraft()
+//
+//                if (draftContent != null && draftContent.isNotBlank()) {
+//                    if (currentEditTextContent != draftContent) {
+//                        binding.edit.setText(draftContent)
+//                        binding.edit.requestFocus()
+//                        binding.edit.text?.length?.let { selection ->
+//                            binding.edit.setSelection(selection)
+//                        }
+//                        Toast.makeText(context, "Загружен черновик: '${draftContent}'", Toast.LENGTH_SHORT).show()
+//                    }
+//                } else {
+//                    if (currentEditTextContent.isNotBlank()) {
+//                        binding.edit.setText("")
+//
+//                    }
+//                }
+//            }
+//        }
 
         binding.ok.setOnClickListener {
             if (!binding.edit.text.isNullOrBlank()) {
@@ -92,8 +99,11 @@ class NewPostFragment : Fragment() {
                 viewModel.saveContent(content)
                 viewModel.clearDraft()
             }
-            findNavController().navigateUp()
 
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner){
+            findNavController().navigateUp()
+            viewModel.loadPosts()
         }
 
 

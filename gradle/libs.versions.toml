@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.1"
+agp = "9.2.1"
 coreKtx = "1.17.0"
 firebaseBom = "34.12.0"
 gson = "2.13.2"
@@ -12,6 +12,7 @@ activity = "1.12.4"
 constraintlayout = "2.2.1"
 navigationVersion = "2.9.7"
 ksp = "2.3.6"
+okhttp = "5.3.2"
 room = "2.8.4"
 googleServices = "4.4.4"
 
@@ -32,6 +33,7 @@ androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navi
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationVersion" }
 androidx-room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
