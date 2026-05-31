@@ -68,7 +68,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
         }
     }
-
     fun saveContent(content: String) {
         thread {
             try {

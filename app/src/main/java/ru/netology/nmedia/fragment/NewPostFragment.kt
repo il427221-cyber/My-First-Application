@@ -57,13 +57,20 @@ class NewPostFragment : Fragment() {
             val currentEditTextContent = binding.edit.text.toString()
 
             if (post != null && post.id != 0L) {
+                if (currentEditTextContent != post.content) {
+                    binding.edit.setText(post.content)
 
                     binding.edit.requestFocus()
                     binding.edit.text?.length?.let { selection ->
                         binding.edit.setSelection(selection)
                     }
-                    Toast.makeText(context, "Редактируем пост: '${post.content}'", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Редактируем пост: '${post.content}'",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+            }
             }
 //        else {
 //                val draftContent = viewModel.getDraft()
