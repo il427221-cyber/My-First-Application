@@ -1,5 +1,6 @@
 package ru.netology.nmedia.repository
 
+import android.annotation.SuppressLint
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.Callback
@@ -37,7 +38,8 @@ class PostRepositoryNetworkImpl : PostRepository {
         return gson.fromJson(response.body.string(), postsType)
     }
 
-    override fun likeById(id: Long,likedByMe: Boolean):Post? {
+    @SuppressLint("SuspiciousIndentation")
+    override fun likeById(id: Long, likedByMe: Boolean):Post? {
         val likeRequest = Request.Builder()
             .url("${BASE_URL}posts/$id/likes")
 
@@ -80,7 +82,6 @@ class PostRepositoryNetworkImpl : PostRepository {
             .url("${BASE_URL}posts")
             .post(gson.toJson(post).toRequestBody(jsonType))
             .build()
-
 
         val call = client.newCall(request)
 

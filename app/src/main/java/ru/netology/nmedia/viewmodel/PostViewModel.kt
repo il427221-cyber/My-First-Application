@@ -31,9 +31,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
-    private val _postUpdated = SingleLiveEvent<Post>()
-    val postUpdated: SingleLiveEvent<Post> = _postUpdated
-
     init {
         loadPosts()
     }
@@ -44,22 +41,33 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
             updatedPostFromServer?.let {newPostData->
 
-                _postUpdated.postValue(newPostData)
-
-                val currentPosts = _posts.value.orEmpty().toMutableList()
+                val currentPosts = _data.value?.posts.orEmpty()
                 val updatedPostsList = currentPosts.map {
                     if (it.id == newPostData.id) newPostData else it
                 }
-                _posts.postValue(updatedPostsList)
-
+                _data.postValue(data.value?.copy(posts = updatedPostsList))
             }
-
 
         }
 
     }
 
-    fun removeById(id: Long) = repository.removeById(id)
+    fun removeById(id: Long) {
+        thread{
+            val currentPosts = _data.value?.posts.orEmpty()
+            _data.postValue(
+                _data.value?.copy(posts = currentPosts
+                    .filter{it.id != id}
+                )
+            )
+            try{
+                repository.removeById(id)
+            } catch (e: Exception) {
+                _data.postValue(_data.value?.copy(posts = currentPosts))
+            }
+
+        }
+    }
 
     fun saveContent(content: String) {
         thread {
@@ -68,11 +76,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                     val text = content.trim()
 
                     if (it.content != text) {
-                        val result = repository.save(it.copy())
+                        val result = repository.save(it.copy(content = text))
                         println(result)
                         _postCreated.postValue(Unit)
                         clearEditMode()
-
                     }
 
                 }
