@@ -5,19 +5,25 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.firebase.messaging.FirebaseMessaging
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import ru.netology.nmedia.databinding.ActivityAppBinding
 import ru.netology.nmedia.fragment.NewPostFragment
+import java.util.concurrent.TimeUnit
 
 class AppActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

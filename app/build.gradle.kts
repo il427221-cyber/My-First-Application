@@ -56,6 +56,8 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.okhttp)
     implementation(libs.androidx.room)
+    implementation(libs.glide)
+    implementation(libs.picasso)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

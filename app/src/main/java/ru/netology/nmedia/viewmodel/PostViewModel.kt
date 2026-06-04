@@ -1,5 +1,6 @@
 package ru.netology.nmedia.viewmodel
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
@@ -11,7 +12,6 @@ import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryNetworkImpl
 import ru.netology.nmedia.util.SingleLiveEvent
-import kotlin.concurrent.thread
 
 private val empty = Post()
 
@@ -35,75 +35,89 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         loadPosts()
     }
 
-    fun likeById(post: Post) {
-        thread{
-            val updatedPostFromServer = repository.likeById(post.id, post.likedByMe)
+    fun likeById(id: Long) {
+        val currentState = _data.value ?: return
+        val posts = currentState.posts
 
-            updatedPostFromServer?.let {newPostData->
+        val post = posts.find { it.id == id } ?: return
 
-                val currentPosts = _data.value?.posts.orEmpty()
-                val updatedPostsList = currentPosts.map {
-                    if (it.id == newPostData.id) newPostData else it
-                }
-                _data.postValue(data.value?.copy(posts = updatedPostsList))
-            }
+        repository.likePostAsync(
+                post.id,
+                post.likedByMe,
+                object:PostRepository.LikePostCallback {
 
-        }
+                    override fun onSuccess(post: Post) {
+                        val updatedPostsList = currentState.posts.map {
+                            if (it.id == id) post else it
+                        }
+                        _data.postValue(currentState.copy(posts = updatedPostsList))
+                    }
 
+                    override fun onError(e: Exception) {
+                        _data.value
+                    }
+
+                })
     }
 
+
+    @SuppressLint("SuspiciousIndentation")
     fun removeById(id: Long) {
-        thread{
             val currentPosts = _data.value?.posts.orEmpty()
-            _data.postValue(
-                _data.value?.copy(posts = currentPosts
-                    .filter{it.id != id}
-                )
-            )
-            try{
-                repository.removeById(id)
-            } catch (e: Exception) {
-                _data.postValue(_data.value?.copy(posts = currentPosts))
-            }
 
-        }
+                repository.removePostAsync(id, object:PostRepository.RemovePostCallback {
+                    override fun onSuccess() {
+                        _data.postValue(
+                            _data.value?.copy(posts = currentPosts
+                                .filter{it.id != id}
+                            )
+                        )
+                    }
+                    override fun onError(e: Exception) {
+                        _data.postValue(_data.value?.copy(posts = currentPosts))
+                    }
+                })
     }
+
     fun saveContent(content: String) {
-        thread {
-            try {
                 edited.value?.let {
                     val text = content.trim()
 
                     if (it.content != text) {
-                        val result = repository.save(it.copy(content = text))
-                        println(result)
-                        _postCreated.postValue(Unit)
-                        clearEditMode()
+                        repository.savePostAsync(
+                            it.copy(content = text),
+                            object: PostRepository.SavePostCallback {
+                                override fun onSuccess(post: Post) {
+                                    _postCreated.postValue(Unit)
+                                    clearEditMode()
+                                }
+
+                                override fun onError(e: Exception) {
+                                    e.printStackTrace()
+                                }
+
+                            })
                     }
 
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
     }
     fun edit(post: Post) {
         edited.value = post
     }
 
-    fun loadPosts(){
-        thread{
-            _data.postValue(FeedModel(loading = true))
 
-            _data.postValue(try{
-                val posts = repository.getAll()
-                FeedModel(posts = posts, empty = posts.isEmpty())
-            } catch(e: Exception) {
-                FeedModel(error = true)
+    fun loadPosts(){
+            _data.postValue(FeedModel(loading = true))
+            repository.getAllAsync(object: PostRepository.GetAllCallback{
+            override fun onSuccess(posts: List<Post>) {
+                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
             }
-            )
-        }
+
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+
+        })
     }
 
     fun clearEditMode() {
