@@ -2,6 +2,7 @@ package ru.netology.nmedia.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
 
 @Entity(tableName = "posts")
@@ -25,6 +26,7 @@ data class PostEntity(
         likes = likes,
         likedByMe = likedByMe,
 
+
     )
 
     companion object {
@@ -36,7 +38,7 @@ data class PostEntity(
                 content = content,
                 published = published,
                 likedByMe = likedByMe,
-                likes = likes
+                likes = likes,
 
             )
         }
