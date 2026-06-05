@@ -1,5 +1,6 @@
 package ru.netology.nmedia.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.FormatNumbers
 import ru.netology.nmedia.databinding.FragmentCardPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.activity.load
 
 interface PostListener {
     fun onEdit(post: Post)
@@ -28,7 +30,6 @@ interface PostListener {
 class PostsAdapter(private val listener: PostListener) : ListAdapter<Post, PostViewHolder>(
     PostViewHolder.PostDiffCallback
 ) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = FragmentCardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding, listener)
@@ -43,6 +44,8 @@ class PostsAdapter(private val listener: PostListener) : ListAdapter<Post, PostV
 
 class PostViewHolder(val binding: FragmentCardPostBinding, private val listener: PostListener) :
     RecyclerView.ViewHolder(binding.root) {
+    val BASE_URL = "http://10.0.2.2:9999"
+    @SuppressLint("SetTextI18n")
     fun bind(post: Post) {
         with(binding) {
             val formatNumbersHelper = FormatNumbers()
@@ -50,6 +53,17 @@ class PostViewHolder(val binding: FragmentCardPostBinding, private val listener:
             author.text = post.author
             published.text = post.published.toString()
             content.text = post.content
+
+            binding.avatar.load("${BASE_URL}/avatars/${post.authorAvatar}")
+
+            if(post.attachment != null) {
+                with(binding) {
+                    mediaContent.load("${BASE_URL}/images/${post.attachment?.url}")
+                    mediaContent.visibility = View.VISIBLE
+                }
+                } else {
+                    binding.mediaContent.visibility = View.GONE
+                }
 
             avatarLikes.isChecked = post.likedByMe
             avatarLikes.text = formatNumbersHelper.bigNumbersFormat(post.likes)

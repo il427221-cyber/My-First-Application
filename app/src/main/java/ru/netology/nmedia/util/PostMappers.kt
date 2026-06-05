@@ -7,6 +7,7 @@ fun Post.toEntity(): PostEntity {
     return PostEntity(
         id = this.id,
         author = this.author,
+        authorAvatar = this.authorAvatar,
         published = this.published,
         content = this.content,
         likes = this.likes,

@@ -47,7 +47,7 @@ class FeedFragment : Fragment() {
                 }
 
                 override fun onLike(post: Post) {
-                    viewModel.likeById(post)
+                    viewModel.likeById(post.id)
                 }
 
                 override fun onRepost(post: Post) {
@@ -113,14 +113,11 @@ class FeedFragment : Fragment() {
             binding.progress.isVisible = state.loading
         }
 
-
         binding.retry.setOnClickListener { viewModel.loadPosts() }
 
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment4_to_newPostFragment2)
         }
-
-
 
         return binding.root
     }

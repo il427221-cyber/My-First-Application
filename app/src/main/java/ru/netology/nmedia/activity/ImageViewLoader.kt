@@ -1,0 +1,25 @@
+package ru.netology.nmedia.activity
+
+import android.annotation.SuppressLint
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import ru.netology.nmedia.R
+
+@SuppressLint("CheckResult")
+fun ImageView.load(url: String) {
+    val BASE_URL = "http://10.0.2.2:9999"
+
+    val options = RequestOptions()
+    if(url.startsWith("${BASE_URL}/avatars/")) {
+        options.circleCrop()
+    }
+
+    Glide.with(this)
+        .load(url)
+        .apply(options)
+        .placeholder(R.drawable.ic_loading_100dp)
+        .error(R.drawable.ic_error_100dp)
+        .timeout(10_000)
+        .into(this)
+}
