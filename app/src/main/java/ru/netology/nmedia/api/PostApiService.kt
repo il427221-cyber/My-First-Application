@@ -50,7 +50,6 @@ interface PostApiService {
     @DELETE("posts/{id}/likes")
     fun dislikeById(@Path("id") id:Long): Call<Post>
 
-    //TODO
     @POST("posts")
     fun edit(@Body post:Post): Call<Post>
 }
