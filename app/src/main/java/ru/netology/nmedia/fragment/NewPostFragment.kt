@@ -1,7 +1,6 @@
 package ru.netology.nmedia.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,8 +49,12 @@ class NewPostFragment : Fragment() {
             }
 
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
+
+        viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
+            Toast.makeText(context, "Ошибка обработки. Повторите попытку позже", Toast.LENGTH_SHORT).show()
+            viewModel.loadPosts()
+        }
 
         viewModel.edited.observe(viewLifecycleOwner) { post ->
             val currentEditTextContent = binding.edit.text.toString()

@@ -31,6 +31,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
+    private val _errorEvent = SingleLiveEvent<String>()
+    val errorEvent: LiveData<String>
+        get() = _errorEvent
+
+
     init {
         loadPosts()
     }
@@ -46,15 +51,17 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 post.likedByMe,
                 object:PostRepository.LikePostCallback {
 
-                    override fun onSuccess(post: Post) {
-                        val updatedPostsList = currentState.posts.map {
+                    override fun onSuccess(post: Post?) {
+                        val updatedPostsList = posts.map {
                             if (it.id == id) post else it
                         }
-                        _data.postValue(currentState.copy(posts = updatedPostsList))
+                        _data.postValue(currentState.copy(posts = updatedPostsList as List<Post>))
+
                     }
 
-                    override fun onError(e: Exception) {
+                    override fun onError(e: Throwable) {
                         _data.value
+                        _errorEvent.value = "Не удалось проставить/снять лайк посту с ID $id: ${e.message}"
                     }
 
                 })
@@ -73,8 +80,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                             )
                         )
                     }
-                    override fun onError(e: Exception) {
+                    override fun onError(e: Throwable) {
                         _data.postValue(_data.value?.copy(posts = currentPosts))
+                        _errorEvent.value = "Не удалось удалить пост с ID $id: ${e.message}"
                     }
                 })
     }
@@ -92,8 +100,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                                     clearEditMode()
                                 }
 
-                                override fun onError(e: Exception) {
+                                override fun onError(e: Throwable) {
                                     e.printStackTrace()
+                                    _errorEvent.value = "Не удалось сохранить пост: ${e.message}"
                                 }
 
                             })
@@ -101,20 +110,33 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
                 }
     }
+
     fun edit(post: Post) {
-        edited.value = post
-    }
+            repository.editPostAsync(
+                post,
+                object : PostRepository.EditPostCallback {
+                    override fun onSuccess(post: Post?) {
+                        edited.value = post
+                    }
+
+                    override fun onError(e: Throwable) {
+                        _errorEvent.value = "Не удалось отредактировать пост: ${e.message}"
+                    }
+
+                })
+
+        }
 
 
     fun loadPosts(){
             _data.postValue(FeedModel(loading = true))
             repository.getAllAsync(object: PostRepository.GetAllCallback{
             override fun onSuccess(posts: List<Post>) {
-                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+                _data.value = FeedModel(posts = posts, empty = posts.isEmpty())
             }
 
-            override fun onError(e: Exception) {
-                _data.postValue(FeedModel(error = true))
+            override fun onError(e: Throwable) {
+                _data.value = FeedModel(error = true)
             }
 
         })
