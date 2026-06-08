@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -25,6 +26,11 @@ class CardPostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentCardPostBinding.inflate(layoutInflater)
+
+        viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
+            Toast.makeText(context, "Ошибка обработки. Повторите попытку позже", Toast.LENGTH_SHORT).show()
+            viewModel.loadPosts()
+        }
 
         val postId = arguments?.getLong("POST_ID")
 

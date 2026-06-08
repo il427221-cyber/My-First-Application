@@ -29,9 +29,11 @@ class FeedFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(layoutInflater)
 
-        val content: String? = arguments?.getString(CONTENT_KEY)
-
         val viewModel: PostViewModel by activityViewModels()
+
+        viewModel.errorEvent.observe(viewLifecycleOwner) { errorMessage ->
+            Toast.makeText(context, "Ошибка обработки. Повторите попытку позже", Toast.LENGTH_SHORT).show()
+        }
 
         val adapter = PostsAdapter(
             object : PostListener {
